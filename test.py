@@ -43,7 +43,6 @@ def main():
     # prepare input
     image = T.ToTensor()(image)
     mask = T.ToTensor()(mask)
-
     _, h, w = image.shape
     grid = 8
 
@@ -63,7 +62,9 @@ def main():
                   dim=1)  # concatenate channels
 
     with torch.inference_mode():
-        _, x_stage2 = generator(x, mask)
+        x_stage1, x_stage2 = generator(x, mask, image)
+
+
 
     # complete image
     image_inpainted = image * (1.-mask) + x_stage2 * mask

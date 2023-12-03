@@ -2,7 +2,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-# from torch.nn.utils.parametrizations import spectral_norm
+
+import torchvision.transforms as T
 
 # ----------------------------------------------------------------------------
 
@@ -316,7 +317,7 @@ class Generator(nn.Module):
 
         self.eval()
 
-    def forward(self, x, mask):
+    def forward(self, x, mask, original = None):
         """
         Args:
             x (Tensor): input of shape [batch, cnum_in, H, W]
@@ -325,10 +326,21 @@ class Generator(nn.Module):
         xin = x
         # get coarse result
         x_stage1 = self.stage1(x)
-        # inpaint input with coarse result
-        x = x_stage1*mask + xin[:, :self.cnum_in-2]*(1.-mask)
-        # get refined result
-        x_stage2, offset_flow = self.stage2(x, mask)
+        if original is not None:
+            # inpaint input with coarse result
+            transform = T.GaussianBlur(kernel_size=(13, 31), sigma=(5, 10))
+            blurred_image = transform(original)
+
+            x = blurred_image*mask + original[:, :self.cnum_in-2]*(1.-mask)
+
+            # get refined result
+            x_stage2, offset_flow = self.stage2(x, mask)
+        else:
+            # inpaint input with coarse result
+            x = x_stage1*mask + xin[:, :self.cnum_in-2]*(1.-mask)
+            print(x.shape)
+            # get refined result
+            x_stage2, offset_flow = self.stage2(x, mask)
 
         if self.return_flow:
             return x_stage1, x_stage2, offset_flow
@@ -337,7 +349,7 @@ class Generator(nn.Module):
 
     @torch.inference_mode()
     def infer(self, image, mask,
-              return_vals=['inpainted', 'stage1']):
+              return_vals=['inpainted', 'stage1'], onlyStage2 = False):
         """
         Args:
             image (Tensor): input image of shape [cnum_out, H, W]
@@ -365,9 +377,9 @@ class Generator(nn.Module):
                       dim=1)  # concatenate channels
 
         if self.return_flow:
-            x_stage1, x_stage2, offset_flow = self.forward(x, mask)
+            x_stage1, x_stage2, offset_flow = self.forward(x, mask, onlyStage2)
         else:
-            x_stage1, x_stage2 = self.forward(x, mask)
+            x_stage1, x_stage2 = self.forward(x, mask, onlyStage2)
 
         image_compl = image * (1.-mask) + x_stage2 * mask
 

@@ -143,3 +143,20 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# PyCharm directories
+.idea/
+
+# Compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Python cache
+*.pyc
+*.pyo
+__pycache__/
+
+# Python environment
+venv/
+env/
