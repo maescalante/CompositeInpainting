@@ -2,7 +2,7 @@
 ### Addressing Shortcomings in GAN and Patch-Based Inpainting with a Hybrid Approach ###
 Authors: __Maria Alejandra Escalante__, __Kai Zhu__
 
-This repository contains the source code of all tested inpainting and composition methods, as well as image test and result sets.
+This repository contains the source code of all tested inpainting and composition methods, as well as image test and result sets. The results can be found in examples folder
 
 ## Stable Diffusion
 `stable_diffusion.ipynb`: Jupyter notebook used to generate stable diffusion inpainted results
