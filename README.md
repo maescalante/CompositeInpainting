@@ -1,4 +1,4 @@
-# Compposite Inpainting #
+# Composite Inpainting #
 ### Addressing Shortcomings in GAN and Patch-Based Inpainting with a Hybrid Approach ###
 Authors: __Maria Alejandra Escalante__, __Kai Zhu__
 
@@ -12,3 +12,6 @@ This repository contains the source code of all tested inpainting and compositio
 
 ## Refinement Patch Nearest-Neighbor
 `refinement_pnn.ipynb`: Generates patch-GAN fusion results by processing coarse-GAN output with two-stage patchmatch to enhance GAN-generated structures with patch textures
+
+## Blending methods
+`blending_methods.ipynb`: Generates hybrid results by using both high pass filters and Gabor filters. Also used to run Deep fill gan results and join the final figuires together
